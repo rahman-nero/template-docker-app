@@ -21,7 +21,7 @@ RUN apt-get clean \
     && apt-get -y autoremove \
     && rm -rf /var/lib/apt/lists/* /tmp/* /usr/share/doc/*
 
-WORKDIR /var/www
+WORKDIR /var/www/backend
 
 # ovevriding php setting - NOT WORKING (the mount of outside don't work)
 # RUN cat docker/php-fpm/php-ini-overrides.ini >> /usr/local/etc/php-fpm.d/www.conf

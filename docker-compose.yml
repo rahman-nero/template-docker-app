@@ -40,7 +40,7 @@ services:
       dockerfile: ./docker/php-fpm/Dockerfile
     restart: unless-stopped
     volumes:
-      - ./backend:/var/www/
+      - ./backend:/var/www/backend
       - ./docker/php-fpm/www.conf:/usr/local/etc/php-fpm.d/www.conf
       - ./docker/php-fpm/logs/:/var/log/
     #ports:
@@ -56,21 +56,21 @@ services:
     tty: true
     user: 'rahman'
     volumes:
-      - ./backend:/var/www/
-      - ./docker:/var/www/docker
+      - ./backend:/var/www/backend
+      - ./docker:/var/www/running-docker
     #ports:
     #- "9001:9001"
     command:
       - /bin/sh
       - -c
-      - supervisord -c /var/www/docker/php-cli/supervisor/supervisord.conf && supervisorctl start all
+      - supervisord -c /var/www/running-docker/php-cli/supervisor/supervisord.conf && supervisorctl start all
 
   npm:
     build:
       context: ./
       dockerfile: ./docker/npm/Dockerfile
     volumes:
-      - ./frontend:/var/www
+      - ./frontend:/var/www/frontend
     tty: true
     restart: unless-stopped
 #    ports:
@@ -80,13 +80,15 @@ services:
     build:
       context: ./
       dockerfile: ./docker/echo-server/Dockerfile
+    environment:
+      - LARAVEL_ECHO_SERVER_AUTH_HOST=https://nginx
     volumes:
-      - ./backend:/var/www
-      - ./docker:/var/www/docker
+      - ./backend:/var/www/backend
+      - ./docker:/var/www/running-docker
     command:
       - /bin/sh
       - -c
-      - supervisord -c /var/www/docker/echo-server/supervisor/supervisord.conf && supervisorctl start all
+      - supervisord -c /var/www/running-docker/echo-server/supervisor/supervisord.conf && supervisorctl start all
     tty: true
     restart: unless-stopped
     links:

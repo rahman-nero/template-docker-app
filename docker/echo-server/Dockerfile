@@ -5,4 +5,4 @@ RUN apt-get update && apt-get install -y supervisor
 
 RUN npm i --location=global laravel-echo-server
 
-WORKDIR /var/www
+WORKDIR /var/www/backend
