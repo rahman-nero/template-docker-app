@@ -1,0 +1,99 @@
+version: '3.7'
+services:
+  nginx:
+    build:
+      context: ./
+      dockerfile: docker/nginx/Dockerfile
+    restart: unless-stopped
+    volumes:
+      - ./:/var/www/
+      - ./docker/nginx/nginx.conf:/etc/nginx/nginx.conf
+      - ./docker/nginx/confs/:/etc/nginx/conf.d/
+      - ./docker/nginx/logs:/var/log/nginx/
+      - ./docker/nginx/ssl/fullchain.pem:/etc/nginx/ssl/fullchain.pem # SSL
+      - ./docker/nginx/ssl/privkey.pem:/etc/nginx/ssl/privkey.pem
+      - ./docker/nginx/ssl/ssl-dhparams.pem:/etc/nginx/ssl/ssl-dhparams.pem
+      - ./docker/nginx/ssl/ssl-params.conf:/etc/nginx/ssl/options-ssl-nginx.conf
+    ports:
+      - '80:80'
+      - '443:443'
+    links:
+      - php-fpm
+
+  mariadb:
+    image: mariadb:10.6
+    restart: unless-stopped
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_USER=rahman
+      - MYSQL_PASSWORD=rahman
+      - MYSQL_DATABASE=app
+    volumes:
+      - ./docker/running/mysql:/var/lib/mysql/
+    ports:
+      - "33006:3306"
+
+  php-fpm:
+    build:
+      context: ./
+      dockerfile: docker/php-fpm/Dockerfile
+      args:
+        WWWUSER: 'obitel'
+    user: 'obitel'
+    restart: unless-stopped
+    volumes:
+      - ./backend:/var/www/
+      - ./docker/php-fpm/www.conf:/usr/local/etc/php-fpm.d/www.conf
+    #ports:
+    #- "9001:9001"
+    links:
+      - nginx
+
+  php-cli:
+    build:
+      context: ./
+      dockerfile: docker/php-cli/Dockerfile
+      args:
+        WWWUSER: 'obitel'
+    user: 'obitel'
+    restart: unless-stopped
+    tty: true
+    volumes:
+      - ./backend:/var/www/
+    #ports:
+    #- "9001:9001"
+    command:
+      - /bin/sh
+      - -c
+      - supervisord -c /var/www/docker/php/supervisor/supervisord.conf && supervisorctl start all
+
+  npm:
+    build:
+      context: ./
+      dockerfile: ./docker/npm/Dockerfile
+    volumes:
+      - ./frontend:/var/www
+    tty: true
+    restart: unless-stopped
+#    ports:
+#      - "3000:3000"
+
+  echo-server:
+    build:
+      context: ./
+      dockerfile: ./docker/echo-server/Dockerfile
+    volumes:
+      - ./backend:/var/www
+    command:
+      - /bin/sh
+      - -c
+      - supervisord -c /var/www/docker/echo-server/supervisor/supervisord.conf && supervisorctl start all
+    tty: true
+    restart: unless-stopped
+    links:
+      - redis
+
+  redis:
+    image: redis
+    ports:
+      - "63799:6379"
