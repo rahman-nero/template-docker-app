@@ -16,7 +16,7 @@ memory:
 	sudo sysctl -w vm.max_map_count=262144
 
 backup:
-	docker-compose exec mariadb mysqldump -uroot -proot production > taptar_$(date "+%d_%m_%+4Y_%H_%M").sql
+	docker-compose exec mariadb mysqldump -uroot -proot app > taptar_$(date "+%d_%m_%+4Y_%H_%M").sql
 
 ###################### BACKEND COMMANDS
 
@@ -33,7 +33,6 @@ pre-tests:
 	docker-compose exec php-cli php artisan key:generate --env=tests
 	docker-compose exec php-cli php artisan jwt:secret --env=tests
 
-
 laravel-route:
 	docker-compose exec php-cli php artisan route:cache
 
@@ -43,7 +42,7 @@ laravel-cache:
 laravel-migrate:
 	docker-compose exec php-cli php artisan migrate
 
-composer:
+composer-install:
 	docker-compose exec php-cli composer install
 
 dump:
@@ -60,9 +59,6 @@ laravel-down:
 
 laravel-up:
 	docker-compose exec php-cli php artisan up
-
-echo-server:
-	docker-compose exec echo-server laravel-echo-server start --force
 
 ######################## FRONTEND COMMANDS
 yarn-install:

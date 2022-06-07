@@ -15,10 +15,11 @@ services:
       - ./docker/nginx/ssl/ssl-dhparams.pem:/etc/nginx/ssl/ssl-dhparams.pem
       - ./docker/nginx/ssl/ssl-params.conf:/etc/nginx/ssl/options-ssl-nginx.conf
     ports:
-      - '80:80'
-      - '443:443'
+      - 80:80
+      - 443:443
     links:
       - php-fpm
+      - echo-server
 
   mariadb:
     image: mariadb:10.6
@@ -36,36 +37,32 @@ services:
   php-fpm:
     build:
       context: ./
-      dockerfile: docker/php-fpm/Dockerfile
-      args:
-        WWWUSER: 'obitel'
-    user: 'obitel'
+      dockerfile: ./docker/php-fpm/Dockerfile
     restart: unless-stopped
     volumes:
       - ./backend:/var/www/
       - ./docker/php-fpm/www.conf:/usr/local/etc/php-fpm.d/www.conf
     #ports:
     #- "9001:9001"
-    links:
-      - nginx
 
   php-cli:
     build:
       context: ./
-      dockerfile: docker/php-cli/Dockerfile
+      dockerfile: ./docker/php-cli/Dockerfile
       args:
-        WWWUSER: 'obitel'
-    user: 'obitel'
+        WWWUSER: 'rahman'
     restart: unless-stopped
     tty: true
+    user: 'rahman'
     volumes:
       - ./backend:/var/www/
+      - ./docker:/var/www/docker
     #ports:
     #- "9001:9001"
     command:
       - /bin/sh
       - -c
-      - supervisord -c /var/www/docker/php/supervisor/supervisord.conf && supervisorctl start all
+      - supervisord -c /var/www/docker/php-cli/supervisor/supervisord.conf && supervisorctl start all
 
   npm:
     build:
@@ -84,6 +81,7 @@ services:
       dockerfile: ./docker/echo-server/Dockerfile
     volumes:
       - ./backend:/var/www
+      - ./docker:/var/www/docker
     command:
       - /bin/sh
       - -c
