@@ -42,6 +42,7 @@ services:
     volumes:
       - ./backend:/var/www/
       - ./docker/php-fpm/www.conf:/usr/local/etc/php-fpm.d/www.conf
+      - ./docker/php-fpm/logs/:/var/log/
     #ports:
     #- "9001:9001"
 

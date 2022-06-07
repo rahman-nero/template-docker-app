@@ -10,7 +10,10 @@ docker-build: memory
 	docker-compose up --build -d
 
 clear-logs:
-	rm ./docker/supervisor/logs/*.log && rm ./storage/logs/laravel.log
+	rm ./docker/echo-server/supervisor/logs/*.log \
+    && rm ./backend/storage/logs/laravel.log \
+    && rm ./docker/nginx/logs/*.log \
+    && rm ./docker/php-cli/supervisor/logs/*.log
 
 memory:
 	sudo sysctl -w vm.max_map_count=262144
@@ -41,6 +44,12 @@ laravel-cache:
 
 laravel-migrate:
 	docker-compose exec php-cli php artisan migrate
+
+laravel-migrate-seed:
+	docker-compose exec php-cli php artisan migrate --seed
+
+laravel-storage-link:
+	docker-compose exec php-cli php artisan storage:link
 
 composer-install:
 	docker-compose exec php-cli composer install
