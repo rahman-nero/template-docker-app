@@ -81,7 +81,7 @@ services:
       context: ./
       dockerfile: ./docker/echo-server/Dockerfile
     environment:
-      - LARAVEL_ECHO_SERVER_AUTH_HOST=https://nginx
+      - LARAVEL_ECHO_SERVER_AUTH_HOST=https://api.taptar.ru
     volumes:
       - ./backend:/var/www/backend
       - ./docker:/var/www/running-docker

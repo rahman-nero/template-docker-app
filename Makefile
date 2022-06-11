@@ -19,7 +19,7 @@ memory:
 	sudo sysctl -w vm.max_map_count=262144
 
 backup:
-	docker-compose exec mariadb mysqldump -uroot -proot app > taptar_$(date "+%d_%m_%+4Y_%H_%M").sql
+	docker-compose exec mariadb mysqldump -uroot -proot app > ./backup/taptar_$(date "+%d_%m_%+4Y_%H_%M").sql
 
 ###################### BACKEND COMMANDS
 
