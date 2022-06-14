@@ -22,6 +22,10 @@ memory:
 dump-database:
 	docker-compose exec mariadb mysqldump -uroot -proot app > ./backup/taptar_$(date "+%d_%m_%Y_%H_%M").sql
 
+chown:
+	docker-compose exec php-fpm chown -R www-data /var/www/storage/app
+	docker-compose exec php-fpm chmod -R 755 /var/www/storage/appм
+
 ###################### BACKEND COMMANDS
 
 # Integration tests
