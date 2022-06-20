@@ -76,10 +76,10 @@ laravel-up:
 
 ######################## FRONTEND COMMANDS
 yarn-install:
-	docker-compose exec npm yarn install
+	docker-compose -T exec npm yarn install
 
 build-production:
-	docker-compose exec npm yarn run build production
+	docker-compose -T exec npm yarn run build production
 
 yarn-start:
 	docker-compose exec npm yarn run start
