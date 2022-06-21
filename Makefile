@@ -78,7 +78,7 @@ laravel-up:
 yarn-install:
 	docker-compose exec -T npm yarn install
 
-build-production:
+build-production: yarn-install
 	docker-compose exec -T npm yarn run build production
 
 yarn-start:
