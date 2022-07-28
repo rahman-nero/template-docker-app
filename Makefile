@@ -23,8 +23,9 @@ dump-database:
 	docker-compose exec mariadb mysqldump -uroot -proot app > ./backup/taptar_$(date "+%d_%m_%Y_%H_%M").sql
 
 chown:
-	docker-compose exec php-fpm chown -R www-data /var/www/storage/app
-	docker-compose exec php-fpm chmod -R 755 /var/www/storage/app
+	docker-compose exec php-fpm chown -R www-data /var/www/storage
+	docker-compose exec php-fpm chmod -R 755 /var/www/storage
+
 
 ###################### BACKEND COMMANDS
 
@@ -76,10 +77,10 @@ laravel-up:
 
 ######################## FRONTEND COMMANDS
 yarn-install:
-	docker-compose exec npm yarn install
+	docker-compose exec -T npm yarn install
 
-build-production:
-	docker-compose exec npm yarn run build production
+build-production: yarn-install
+	docker-compose exec -T npm yarn run build production
 
 yarn-start:
 	docker-compose exec npm yarn run start
