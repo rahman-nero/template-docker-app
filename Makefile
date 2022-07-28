@@ -57,9 +57,11 @@ laravel-migrate-seed:
 laravel-storage-link:
 	docker-compose exec php-cli php artisan storage:link
 
-composer-install:
+composer-dev-install:
 	docker-compose exec php-cli composer install
 
+composer-prod-install:
+	docker-compose exec php-cli composer install --no-dev
 dump:
 	docker-compose exec php-cli composer dumpautoload
 
