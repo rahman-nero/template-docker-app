@@ -23,8 +23,8 @@ dump-database:
 	docker-compose exec mariadb mysqldump -uroot -proot app > ./backup/taptar_$(date "+%d_%m_%Y_%H_%M").sql
 
 chown:
-	docker-compose exec php-fpm chown -R www-data /var/www/storage
-	docker-compose exec php-fpm chmod -R 755 /var/www/storage
+	docker-compose exec php-fpm chown -R www-data /var/www/backend/storage
+	docker-compose exec php-fpm chmod -R 755 /var/www/backend/storage
 
 
 ###################### BACKEND COMMANDS
@@ -62,6 +62,7 @@ composer-dev-install:
 
 composer-prod-install:
 	docker-compose exec php-cli composer install --no-dev
+
 dump:
 	docker-compose exec php-cli composer dumpautoload
 
