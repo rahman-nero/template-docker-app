@@ -52,10 +52,10 @@ services:
       context: ./
       dockerfile: ./docker/php-cli/Dockerfile
       args:
-        WWWUSER: 'rahman'
+        WWWUSER: ${USER}
     restart: unless-stopped
     tty: true
-    user: 'rahman'
+    user: ${USER}
     volumes:
       - ./backend:/var/www/backend
       - ./docker:/var/www/running-docker
